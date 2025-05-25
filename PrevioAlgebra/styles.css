@@ -41,7 +41,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Estilos para el bloque educativo */
 .educational-block {
     margin-bottom: 30px;
     border: 1px solid var(--border-color);
@@ -159,11 +158,11 @@ h1 {
     .panel {
         flex-direction: row;
     }
-    
+
     .input-section {
         flex: 1;
     }
-    
+
     .output-section {
         flex: 1;
     }
@@ -186,7 +185,8 @@ label {
     font-weight: bold;
 }
 
-select, button {
+select,
+button {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-color);
@@ -438,4 +438,23 @@ td {
 .parametric-expressions p {
     margin: 5px 0;
     font-family: 'Times New Roman', serif;
+}
+
+.support-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #4285f4 0%, #1976d2 100%);
+    color: white;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
