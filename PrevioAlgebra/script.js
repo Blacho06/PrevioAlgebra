@@ -578,15 +578,6 @@ function verifySpecificSolution(A, b, solution) {
 }
 
 
-
-
-
-
-
-
-
-
-
 // Funciones para implementar los métodos de resolución
 function solveSystem() {
     // Limpiar resultados anteriores
