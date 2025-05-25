@@ -473,7 +473,121 @@ function displaySolution(solution, type = 'unique') {
     }
     
     resultContainer.appendChild(resultTable);
-}// Funciones para implementar los métodos de resolución
+}
+function displayInfiniteSolutions(parameterizedSolution) {
+    const resultContainer = document.getElementById('solution-result');
+    resultContainer.innerHTML = '';
+    
+    const titleH3 = document.createElement('h3');
+    titleH3.textContent = 'El sistema tiene infinitas soluciones';
+    titleH3.style.color = 'var(--warning-color)';
+    resultContainer.appendChild(titleH3);
+    
+    const descriptionP = document.createElement('p');
+    descriptionP.textContent = 'Las soluciones pueden expresarse como:';
+    resultContainer.appendChild(descriptionP);
+    
+    // Mostrar la expresión paramétrica
+    const solutionDiv = document.createElement('div');
+    solutionDiv.className = 'parametric-solution';
+    solutionDiv.innerHTML = parameterizedSolution.expression;
+    resultContainer.appendChild(solutionDiv);
+    
+    // Agregar input para validar valores específicos
+    const validationDiv = document.createElement('div');
+    validationDiv.className = 'parameter-validation';
+    validationDiv.innerHTML = `
+        <h4>Validar solución específica:</h4>
+        <label for="parameter-value">Ingrese un valor para el parámetro t:</label>
+        <input type="number" id="parameter-value" step="any" placeholder="Ej: 1, -2, 0.5">
+        <button onclick="validateParameterValue()" style="width: auto; margin-left: 10px;">Validar</button>
+        <div id="parameter-result" class="parameter-result"></div>
+    `;
+    resultContainer.appendChild(validationDiv);
+    
+    // Guardar la información paramétrica globalmente
+    window.currentParametricSolution = parameterizedSolution;
+}
+
+// 2. AGREGAR FUNCIÓN PARA VALIDAR VALORES DEL PARÁMETRO
+
+function validateParameterValue() {
+    const parameterValue = parseFloat(document.getElementById('parameter-value').value);
+    const resultDiv = document.getElementById('parameter-result');
+    
+    if (isNaN(parameterValue)) {
+        resultDiv.innerHTML = '<p style="color: var(--accent-color);">Por favor, ingrese un valor numérico válido.</p>';
+        return;
+    }
+    
+    const parametricSol = window.currentParametricSolution;
+    const specificSolution = [];
+    
+    // Calcular la solución específica sustituyendo el parámetro
+    for (let i = 0; i < parametricSol.variables.length; i++) {
+        const variable = parametricSol.variables[i];
+        if (variable.isFree) {
+            specificSolution[i] = parameterValue;
+        } else {
+            // Evaluar la expresión con el parámetro
+            specificSolution[i] = variable.constant + variable.coefficient * parameterValue;
+        }
+    }
+    
+    // Mostrar la solución específica
+    let solutionHTML = '<h5>Solución para t = ' + parameterValue + ':</h5>';
+    solutionHTML += '<div class="specific-solution">';
+    for (let i = 0; i < specificSolution.length; i++) {
+        solutionHTML += `<p>x<sub>${i+1}</sub> = ${formatNumber(specificSolution[i])}</p>`;
+    }
+    solutionHTML += '</div>';
+    
+    // Verificar la solución
+    const originalA = window.currentSystemMatrix;
+    const originalB = window.currentSystemVector;
+    
+    if (originalA && originalB) {
+        const isValid = verifySpecificSolution(originalA, originalB, specificSolution);
+        if (isValid) {
+            solutionHTML += '<p style="color: var(--success-color); font-weight: bold;">✓ Esta solución es válida</p>';
+        } else {
+            solutionHTML += '<p style="color: var(--accent-color); font-weight: bold;">✗ Esta solución no es válida</p>';
+        }
+    }
+    
+    resultDiv.innerHTML = solutionHTML;
+}
+
+// 3. AGREGAR FUNCIÓN PARA VERIFICAR SOLUCIÓN ESPECÍFICA
+
+function verifySpecificSolution(A, b, solution) {
+    const n = A.length;
+    
+    for (let i = 0; i < n; i++) {
+        let leftSide = 0;
+        for (let j = 0; j < n; j++) {
+            leftSide += A[i][j] * solution[j];
+        }
+        
+        if (Math.abs(leftSide - b[i]) > 1e-10) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+// Funciones para implementar los métodos de resolución
 function solveSystem() {
     // Limpiar resultados anteriores
     document.getElementById('solution-steps').innerHTML = '';
@@ -606,16 +720,103 @@ function solveByGaussianElimination(A, b) {
         }
     }
     
-    if (!hasUniqueSolution) {
-        displayCalculationStep('El sistema tiene infinitas soluciones.');
-        let solutionText = '';
-        
-        // Intentar expresar las soluciones en términos de parámetros libres
-        // Esto es una simplificación y no funcionará correctamente en todos los casos
-        solutionText = 'Las soluciones dependen de parámetros libres.';
-        
-        return { type: 'infinite', expression: solutionText };
+   if (!hasUniqueSolution) {
+    displayCalculationStep('El sistema tiene infinitas soluciones.');
+    
+    // Guardar matrices originales para verificación
+    window.currentSystemMatrix = A;
+    window.currentSystemVector = b;
+    
+    // Generar expresión paramétrica
+    const parametricSolution = generateParametricSolution(augmentedA, augmentedB);
+    displayInfiniteSolutions(parametricSolution);
+    
+    return { type: 'infinite', parametric: parametricSolution };
+}
+
+// 5. AGREGAR FUNCIÓN PARA GENERAR SOLUCIÓN PARAMÉTRICA
+
+function generateParametricSolution(A, b) {
+    const n = A.length;
+    const variables = [];
+    
+    // Identificar variables libres y dependientes
+    let freeVariableIndex = -1;
+    
+    // Buscar la primera variable que puede ser libre
+    for (let j = n - 1; j >= 0; j--) {
+        let hasNonZero = false;
+        for (let i = 0; i < n; i++) {
+            if (Math.abs(A[i][j]) > 1e-10) {
+                hasNonZero = true;
+                break;
+            }
+        }
+        if (!hasNonZero) {
+            freeVariableIndex = j;
+            break;
+        }
     }
+    
+    // Si no encontramos una variable completamente libre, usar la última
+    if (freeVariableIndex === -1) {
+        freeVariableIndex = n - 1;
+    }
+    
+    // Construir las expresiones para cada variable
+    let expressionHTML = '<div class="parametric-expressions">';
+    
+    for (let i = 0; i < n; i++) {
+        if (i === freeVariableIndex) {
+            // Variable libre
+            variables[i] = { isFree: true, constant: 0, coefficient: 1 };
+            expressionHTML += `<p>x<sub>${i+1}</sub> = t (parámetro libre)</p>`;
+        } else {
+            // Variable dependiente - simplificación
+            // En una implementación completa, aquí se haría back-substitution
+            let constant = 0;
+            let coefficient = 0;
+            
+            // Buscar una fila no nula para esta variable
+            for (let row = 0; row < n; row++) {
+                if (Math.abs(A[row][i]) > 1e-10) {
+                    // Simplificación: asumir que podemos expresar en términos del parámetro
+                    constant = b[row] / A[row][i];
+                    if (Math.abs(A[row][freeVariableIndex]) > 1e-10) {
+                        coefficient = -A[row][freeVariableIndex] / A[row][i];
+                    }
+                    break;
+                }
+            }
+            
+            variables[i] = { isFree: false, constant: constant, coefficient: coefficient };
+            
+            if (Math.abs(coefficient) < 1e-10) {
+                expressionHTML += `<p>x<sub>${i+1}</sub> = ${formatNumber(constant)}</p>`;
+            } else {
+                const coeffStr = Math.abs(coefficient - 1) < 1e-10 ? '' : 
+                                Math.abs(coefficient + 1) < 1e-10 ? '-' : 
+                                formatNumber(coefficient);
+                const sign = coefficient >= 0 ? '+' : '';
+                
+                if (Math.abs(constant) < 1e-10) {
+                    expressionHTML += `<p>x<sub>${i+1}</sub> = ${coeffStr}t</p>`;
+                } else {
+                    expressionHTML += `<p>x<sub>${i+1}</sub> = ${formatNumber(constant)} ${sign} ${coeffStr}t</p>`;
+                }
+            }
+        }
+    }
+    
+    expressionHTML += '<p style="margin-top: 10px; font-style: italic;">donde t puede ser cualquier número real</p>';
+    expressionHTML += '</div>';
+    
+    return {
+        variables: variables,
+        expression: expressionHTML,
+        freeVariableIndex: freeVariableIndex
+    };
+}
     
     // Fase de sustitución hacia atrás
     displayCalculationStep('2. Fase de sustitución hacia atrás:');
