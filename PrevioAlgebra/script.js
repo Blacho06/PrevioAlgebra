@@ -502,28 +502,23 @@ function solveSystem() {
     const method = document.getElementById('method').value;
     let solution;
     
-    switch (method) {
-        case 'gaussian':
-            solution = solveByGaussianElimination(A, b);
-            break;
-        case 'gauss-jordan':
-            solution = solveByGaussJordan(A, b);
-            break;
-        case 'cramer':
-            solution = solveByCramer(A, b);
-            break;
-        case 'inverse':
-            solution = solveByInverse(A, b);
-            break;
-        default:
-            solution = solveByGaussianElimination(A, b);
+   switch (method) {
+    case 'gaussian':
+        solution = solveByGaussianElimination(A, b);
+        break;
+    case 'gauss-jordan':
+        solution = solveByGaussJordan(A, b);
+        break;
+    default:
+        solution = solveByGaussianElimination(A, b);
+}     solution = solveByGaussianElimination(A, b);
     }
     
     // Verificar la solución
     if (solution.type === 'unique') {
         verifySolution(A, b, solution.values);
     }
-}
+
 
 function solveByGaussianElimination(A, b) {
     // Clonar matrices para no modificar las originales
@@ -744,59 +739,6 @@ function solveByGaussJordan(A, b) {
     
     displaySolution(solution, 'unique');
     return { type: 'unique', values: solution };
-}// Método de Cramer
-function solveByCramer(A, b) {
-    const n = A.length;
-    
-    displayCalculationStep('Resolviendo por la Regla de Cramer:');
-    
-    // Calcular el determinante de la matriz de coeficientes
-    const detA = determinant(A);
-    displayCalculationStep(`Calculando el determinante de la matriz de coeficientes: |A| = ${formatNumber(detA)}`);
-    
-    // Si el determinante es cero, el sistema no tiene solución única
-    if (Math.abs(detA) < 1e-10) {
-        // Verificar si es un sistema inconsistente o con infinitas soluciones
-        const augmentedMatrix = [];
-        for (let i = 0; i < n; i++) {
-            augmentedMatrix[i] = [...A[i], b[i]];
-        }
-        
-        const rango = calculateRank(augmentedMatrix);
-        const rangoA = calculateRank(A);
-        
-        if (rango > rangoA) {
-            displayCalculationStep('El determinante de la matriz es cero y el sistema es inconsistente (no tiene solución).');
-            return { type: 'none' };
-        } else {
-            displayCalculationStep('El determinante de la matriz es cero y el sistema tiene infinitas soluciones.');
-            return { type: 'infinite', expression: 'Las soluciones dependen de parámetros libres.' };
-        }
-    }
-    
-    // Calcular los determinantes de las matrices auxiliares
-    const solution = [];
-    
-    for (let j = 0; j < n; j++) {
-        // Crear una copia de la matriz de coeficientes
-        const Aj = [];
-        for (let i = 0; i < n; i++) {
-            Aj[i] = [...A[i]];
-            // Reemplazar la columna j con el vector de términos independientes
-            Aj[i][j] = b[i];
-        }
-        
-        // Calcular el determinante de la matriz auxiliar
-        const detAj = determinant(Aj);
-        displayCalculationStep(`Calculando el determinante para x<sub>${j+1}</sub>: |A<sub>${j+1}</sub>| = ${formatNumber(detAj)}`);
-        
-        // Calcular el valor de la incógnita
-        solution[j] = detAj / detA;
-        displayCalculationStep(`x<sub>${j+1}</sub> = |A<sub>${j+1}</sub>| / |A| = ${formatNumber(detAj)} / ${formatNumber(detA)} = ${formatNumber(solution[j])}`);
-    }
-    
-    displaySolution(solution, 'unique');
-    return { type: 'unique', values: solution };
 }
 
 // Función para calcular el rango de una matriz
@@ -854,59 +796,6 @@ function calculateRank(matrix) {
     return rank;
 }
 
-// Método de la Matriz Inversa
-function solveByInverse(A, b) {
-    const n = A.length;
-    
-    displayCalculationStep('Resolviendo por el Método de la Matriz Inversa:');
-    
-    // Calcular el determinante para verificar si la matriz es invertible
-    const detA = determinant(A);
-    displayCalculationStep(`Calculando el determinante de la matriz: |A| = ${formatNumber(detA)}`);
-    
-    if (Math.abs(detA) < 1e-10) {
-        // Verificar si es un sistema inconsistente o con infinitas soluciones
-        const augmentedMatrix = [];
-        for (let i = 0; i < n; i++) {
-            augmentedMatrix[i] = [...A[i], b[i]];
-        }
-        
-        const rango = calculateRank(augmentedMatrix);
-        const rangoA = calculateRank(A);
-        
-        if (rango > rangoA) {
-            displayCalculationStep('La matriz no es invertible y el sistema es inconsistente (no tiene solución).');
-            return { type: 'none' };
-        } else {
-            displayCalculationStep('La matriz no es invertible y el sistema tiene infinitas soluciones.');
-            return { type: 'infinite', expression: 'Las soluciones dependen de parámetros libres.' };
-        }
-    }
-    
-    // Calcular la matriz inversa
-    displayCalculationStep('Calculando la matriz inversa A<sup>-1</sup>:');
-    const inverse = matrixInverse(A);
-    displayMatrixStep('A<sup>-1</sup> =', inverse);
-    
-    // Multiplicar la inversa por el vector de términos independientes
-    displayCalculationStep('Multiplicando A<sup>-1</sup> por b:');
-    const solution = matrixMultiply(inverse, b);
-    
-    // Mostrar el cálculo detallado
-    displayCalculationStep('x = A<sup>-1</sup> · b');
-    for (let i = 0; i < n; i++) {
-        let detail = `x<sub>${i+1}</sub> = `;
-        for (let j = 0; j < n; j++) {
-            detail += `(${formatNumber(inverse[i][j])} × ${formatNumber(b[j])})`;
-            if (j < n - 1) detail += ' + ';
-        }
-        detail += ` = ${formatNumber(solution[i])}`;
-        displayCalculationStep(detail);
-    }
-    
-    displaySolution(solution, 'unique');
-    return { type: 'unique', values: solution };
-}// Función para verificar la solución
 function verifySolution(A, b, solution) {
     const n = A.length;
     const verificationResults = [];
