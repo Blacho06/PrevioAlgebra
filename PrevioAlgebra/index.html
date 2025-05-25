@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Solucionador de Sistemas de Ecuaciones</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Solucionador de Sistemas de Ecuaciones</h1>
+
+            <div class="instructions">
+                <h2>Instrucciones de uso:</h2>
+                <ul>
+                    <li>Seleccione el tamaño del sistema de ecuaciones (de 2x2
+                        hasta 6x6).</li>
+                    <li>Elija el método de resolución que desea utilizar.</li>
+                    <li>Ingrese los coeficientes en los campos
+                        correspondientes.</li>
+                    <li>Puede ingresar números enteros, decimales (con punto) o
+                        fracciones (como "1/2").</li>
+                    <li>Haga clic en "Resolver" para ver el proceso de solución
+                        paso a paso.</li>
+                    <li>Si el sistema no tiene solución o tiene infinitas
+                        soluciones, se le notificará.</li>
+                    <li>La comprobación automática verificará que la solución
+                        sea correcta.</li>
+                </ul>
+            </div>
+
+            <div class="panel">
+                <div class="input-section">
+                    <h3 class="section-title">Ingreso de datos</h3>
+
+                    <div class="form-group">
+                        <label for="size">Tamaño del sistema:</label>
+                        <select id="size" onchange="generateMatrix()">
+                            <option value="2">2x2</option>
+                            <option value="3">3x3</option>
+                            <option value="4">4x4</option>
+                            <option value="5">5x5</option>
+                            <option value="6">6x6</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="method">Método de resolución:</label>
+                        <select id="method" onchange="updateMethodInfo()">
+                            <option value="gaussian">Eliminación
+                                Gaussiana</option>
+                            <option value="gauss-jordan">Método de
+                                Gauss-Jordan</option>
+                            <option value="cramer">Regla de Cramer</option>
+                            <option value="inverse">Método de la Matriz
+                                Inversa</option>
+                        </select>
+                    </div>
+
+                    <div class="matrix-container">
+                        <div id="matrix-inputs"></div>
+                    </div>
+
+                    <button onclick="solveSystem()">Resolver sistema</button>
+
+                    <div class="example-section">
+                        <h4>Ejemplos</h4>
+                        <select id="examples" onchange="loadExample()">
+                            <option value>Seleccionar ejemplo...</option>
+                            <option value="example1">Ejemplo 2x2 simple</option>
+                            <option value="example2">Ejemplo 3x3 con
+                                fracciones</option>
+                            <option value="example3">Ejemplo 4x4
+                                complejo</option>
+                            <option value="example4">Sistema sin
+                                solución</option>
+                            <option value="example5">Sistema con infinitas
+                                soluciones</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="output-section">
+                    <h3 class="section-title">Resolución y resultado</h3>
+                    <div id="solution-steps" class="steps"></div>
+                    <div id="solution-result" class="result"></div>
+                    <div id="verification-result" class="verification"></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>© 2025 - Solucionador de Sistemas de Ecuaciones</p>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

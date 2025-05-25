@@ -1,0 +1,392 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2980b9;
+    --accent-color: #e74c3c;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --bg-color: #f4f6f9;
+    --text-color: #333;
+    --light-gray: #ecf0f1;
+    --border-color: #ddd;
+    --highlight-color: #ffeb3b;
+    --edu-bg-color: #edf7ff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Estilos para el bloque educativo */
+.educational-block {
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.edu-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.edu-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.toggle-icon {
+    transition: transform 0.3s;
+}
+
+.edu-header:hover {
+    background-color: var(--secondary-color);
+}
+
+.edu-content {
+    background-color: var(--edu-bg-color);
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.5s ease;
+}
+
+.edu-content.show {
+    max-height: 2000px;
+    padding: 20px;
+}
+
+.edu-section {
+    margin-bottom: 20px;
+    display: none;
+}
+
+.edu-section.general-info {
+    display: block;
+}
+
+.edu-section.active {
+    display: block;
+}
+
+.edu-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.edu-section p {
+    margin-bottom: 10px;
+}
+
+.edu-section ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.math-block {
+    background-color: #f7f7f7;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-style: italic;
+}
+
+.instructions {
+    background-color: var(--light-gray);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.instructions h2 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.instructions ul {
+    padding-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 5px;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .panel {
+        flex-direction: row;
+    }
+    
+    .input-section {
+        flex: 1;
+    }
+    
+    .output-section {
+        flex: 1;
+    }
+}
+
+.section-title {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+.matrix-container {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    padding: 8px;
+    text-align: center;
+}
+
+.coefficient-input {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+}
+
+.equals-sign {
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+.variable-label {
+    font-style: italic;
+    margin-right: 5px;
+}
+
+.output-section {
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: 5px;
+}
+
+.steps {
+    margin-top: 20px;
+}
+
+.step {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 3px solid var(--primary-color);
+}
+
+.error-message {
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.matrix-display {
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.highlight {
+    background-color: var(--highlight-color);
+    padding: 2px;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.verification {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.verification.success {
+    background-color: rgba(46, 204, 113, 0.2);
+    border-left: 3px solid var(--success-color);
+}
+
+.verification.error {
+    background-color: rgba(231, 76, 60, 0.2);
+    border-left: 3px solid var(--accent-color);
+}
+
+.example-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.example-section h4 {
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+.calculation-detail {
+    margin-left: 20px;
+    padding: 5px 0;
+    font-family: monospace;
+}
+
+.verification-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.verification-table th,
+.verification-table td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: center;
+}
+
+.verification-table th {
+    background-color: var(--light-gray);
+}
+
+.check-icon {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.error-icon {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Estilos para las pestañas de métodos */
+.method-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.method-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    background-color: #f5f5f5;
+    margin-right: 5px;
+    transition: all 0.3s;
+}
+
+.method-tab.active {
+    background-color: white;
+    border-color: var(--border-color);
+    position: relative;
+}
+
+.method-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+}
